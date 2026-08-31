@@ -1,4 +1,4 @@
-from datetime import datetime 
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session 
@@ -77,7 +77,7 @@ def borrow_book(
 
     # Update book parameters.
     book.is_borrowed = True 
-    book.borrowed_at = datetime.now() 
+    book.borrowed_at = datetime.now(timezone.utc)
     book.user_card_number = borrow_data.user_card_number 
 
     # Commit the transaction. 
@@ -129,7 +129,7 @@ def return_book(
     db.refresh(book)
 
     return book
-    
+
 @router.get("/", response_model=list[BookResponse])
 def get_book_list(
     db: Session = Depends(get_db)
