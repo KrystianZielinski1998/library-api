@@ -1,31 +1,28 @@
+from datetime import datetime
+
 from pydantic import BaseModel, Field
-from datetime import datetime 
 
 
 class BookCreate(BaseModel):
-    """ Request schema for adding a new book. """
+    """Request schema for adding a new book."""
 
     # Unique six-digit identifier assigned to the book.
-    serial_number: int = Field(
-        ge=100000,
-        le=999999
-    )
+    serial_number: int = Field(ge=100000, le=999999)
 
     # Book information provided when creating the record.
-    title: str 
-    author: str 
+    title: str
+    author: str
+
 
 class BorrowBook(BaseModel):
-    """ Request schema for borrowing a book. """
+    """Request schema for borrowing a book."""
 
     # Six-digit library card number of the borrower.
-    user_card_number: int = Field(
-        ge=100000,
-        le=999999
-    )
+    user_card_number: int = Field(ge=100000, le=999999)
+
 
 class BookResponse(BaseModel):
-    """ Response schema representing the current state of a book. """
+    """Response schema representing the current state of a book."""
 
     serial_number: int
     title: str
@@ -40,5 +37,3 @@ class BookResponse(BaseModel):
 
     # Allow Pydantic to build the response model from SQLAlchemy model attributes.
     model_config = {"from_attributes": True}
-
-

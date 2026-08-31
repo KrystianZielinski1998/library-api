@@ -1,8 +1,10 @@
-from sqlalchemy import Boolean, Column, DateTime, Integer, String 
+from sqlalchemy import Boolean, Column, DateTime, Integer, String
+
 from ..database import Base
 
+
 class Book(Base):
-    """ Represents the current state of a library book. """
+    """Represents the current state of a library book."""
 
     # Defines name of the table in database.
     __tablename__ = "books"
@@ -16,7 +18,7 @@ class Book(Base):
     # Book's author.
     author = Column(String, nullable=False)
 
-    # Book's state - either borrowed or available. 
+    # Book's state - either borrowed or available.
     is_borrowed = Column(Boolean, default=False)
 
     # Date of when book was borrowed.
@@ -24,4 +26,3 @@ class Book(Base):
 
     # Card number of a user who borrowed a book.
     user_card_number = Column(Integer, nullable=True)
-
