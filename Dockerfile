@@ -4,15 +4,16 @@ FROM python:3.12-slim
 # Set the working directory inside the container.
 WORKDIR /app
 
-# Copy the dependency file into the container.
-COPY requirements.txt .
-
 # Install Python dependencies.
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application source code into the container.
-COPY app/ ./app/
+# Copy the application source code.
+COPY app ./app
 
-# Start the FastAPI application.
+# Copy Alembic configuration and migration files.
+COPY alembic.ini .
+COPY alembic ./alembic
+
+# Start the application.
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-

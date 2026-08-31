@@ -1,35 +1,49 @@
-services: 
-  api: 
-    # Build the FastAPI application from the Dockerfile. 
-    build: . 
+services:
+  api:
+    # Build the FastAPI application from the Dockerfile.
+    build: .
 
-    # Map the host port to the FastAPI container port. 
-    ports: 
+    # Map the host port to the FastAPI container port.
+    ports:
       - "8000:8000"
 
-    # start the API after the database container is started. 
-    depends_on: 
-      - db 
+    # Start the API only after PostgreSQL is healthy and ready
+    # to accept connections.
+    depends_on:
+      db:
+        condition: service_healthy
 
-  db: 
-    # Use official PostgreSQL image. 
-    image: postgres:17 
+    # Run database migrations before starting the FastAPI server.
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000"
+
+  db:
+    # Use the official PostgreSQL image.
+    image: postgres:17
 
     # Set PostgreSQL environment variables.
-    environment: 
-      POSTGRES_USER: postgres 
-      POSTGRES_PASSWORD: mypassword 
-      POSTGRES_DB: library_api 
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: library_api
 
-    # Persist PostgreSQL data between container restarts. 
-    volumes: 
-      - postgres_data:/var/lib/postgresql/data 
+    # Persist PostgreSQL data between container restarts.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
-    # Expose PostgreSQL to the host machine. 
-    ports: 
+    # Expose PostgreSQL to the host machine.
+    ports:
       - "5432:5432"
 
-volumes: 
-  postgres_data: 
+    # Check whether PostgreSQL is ready to accept connections.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d library_api"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
   
 

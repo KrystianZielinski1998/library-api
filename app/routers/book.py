@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session 
 
 from ..database import get_db 
-from ..models.books import Book 
-from ..schemas.books import BookCreate, BorrowBook, BookResponse 
+from ..models.book import Book 
+from ..schemas.book import BookCreate, BorrowBook, BookResponse 
 
 
 # Creates router for endpoints related to the library's books. 
@@ -88,7 +88,48 @@ def borrow_book(
 
     return book 
 
+@router.patch("/{serial_number}/return", response_model=BookResponse)
+def return_book(
+    serial_number: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Returns a borrowed book to the library.
 
+    Args:
+        serial_number: Unique identifier assigned to the book.
+        db: Database session used to persist the book.
+    """
+
+    # Query the book by its serial number.
+    book = db.query(Book).filter(
+        Book.serial_number == serial_number
+    ).first()
+
+    # Error handling.
+    if book is None:
+        raise HTTPException(status_code=404, detail="Book not found")
+
+    # Check whether the book is currently borrowed.
+    if not book.is_borrowed:
+        raise HTTPException(
+            status_code=400,
+            detail="Book is not currently borrowed"
+        )
+
+    # Reset the book's borrowed state.
+    book.is_borrowed = False
+    book.borrowed_at = None
+    book.user_card_number = None
+
+    # Commit the transaction.
+    db.commit()
+
+    # Refresh the object to reflect the current database state.
+    db.refresh(book)
+
+    return book
+    
 @router.get("/", response_model=list[BookResponse])
 def get_book_list(
     db: Session = Depends(get_db)
