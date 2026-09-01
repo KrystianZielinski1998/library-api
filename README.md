@@ -1,11 +1,9 @@
-# library-api
-
 # **library-api**   
  **A REST API for managing books in a library.**  
 
 ---
 
-## ** Overview**  
+## Overview
 
 Library API is a backend REST API for managing books in a library.
 
@@ -25,7 +23,7 @@ The entire application can be run using Docker Compose, which starts both the Fa
 
 The project also uses GitHub Actions and Ruff for automated code quality checks.
 
-## ** Tech Stack **
+## Tech Stack
 
 - **Python 3.12** - Programming language
 - **FastAPI** - Web framework for building the REST API
@@ -37,7 +35,7 @@ The project also uses GitHub Actions and Ruff for automated code quality checks.
 - **Docker** - Containerization and service orchestration
 - **GitHub Actions & Ruff** - Code formatting and linting
 
-## ** Project structure**  
+## Project structure 
 
 ```text
 library-api/
@@ -71,8 +69,21 @@ library-api/
 └── README.md                        # Project documentation
 ```
 
+## Start the application
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/KrystianZielinski1998/library-api
+cd library-api
+```
+
+### 2. Run the application
+
+```bash
+docker compose up --build
+```
 
 
-## ** Start the application**  
 
 
