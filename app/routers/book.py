@@ -61,7 +61,13 @@ def borrow_book(
     # Error handling.
     if book is None:
         raise HTTPException(status_code=404, detail="Book not found")
-
+    
+    if book.is_borrowed:
+        raise HTTPException(
+            status_code=409,
+            detail="Book is already borrowed"
+        )
+        
     # Update book parameters.
     book.is_borrowed = True
     book.borrowed_at = datetime.now(timezone.utc)
